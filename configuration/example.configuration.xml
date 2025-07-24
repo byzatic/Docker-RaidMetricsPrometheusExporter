@@ -1,0 +1,8 @@
+<Configuration>
+    <cronExpressionString>*/5 * * * * ?</cronExpressionString>
+    <prometheusEndpointURL>http://0.0.0.0:8080/metrics</prometheusEndpointURL>
+    <megacliReaderMode>app</megacliReaderMode>
+    <megacliAppPath>megacli</megacliAppPath>
+    <megacliContentFilePath>data/megacli.log</megacliContentFilePath>
+    <megacliLockFilePath>data/megacli.lock</megacliLockFilePath>
+</Configuration>

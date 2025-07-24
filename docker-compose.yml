@@ -1,0 +1,35 @@
+version: '3.7'
+services:
+  develop-docker-raid-metrics-prometheus-exporter:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: s.vlasov/docker-raid-metrics-prometheus-exporter:1.0
+    container_name: local-develop-docker-raid-metrics-prometheus-exporter
+    privileged: true
+    ports:
+      - "20222:8080"
+    volumes:
+      - ${PWD}/data:/app/data
+#      - /Users/svyatoslavvlasov/Developer/Working/GIT/Common/docker-raid-metrics-prometheus-exporter/data:/app/data
+      - ${PWD}/configuration:/app/configuration
+#      - /Users/svyatoslavvlasov/Developer/Working/GIT/Common/docker-raid-metrics-prometheus-exporter/configuration:/app/configuration
+      - ${PWD}/logs:/app/logs
+#      - /Users/svyatoslavvlasov/Developer/Working/GIT/Common/docker-raid-metrics-prometheus-exporter/logs:/app/logs
+    logging:
+      driver: json-file
+      options:
+        max-file: "10"
+        max-size: "10m"
+    networks:
+      - 93849dcd429a-test
+
+networks:
+  93849dcd429a-test:
+    name: 93849dcd429a-test
+    external: false
+
+
+
+
+

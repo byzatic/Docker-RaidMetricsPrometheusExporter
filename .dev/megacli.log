@@ -1,0 +1,105 @@
+
+Adapter #0
+
+Enclosure Device ID: 252
+Slot Number: 0
+Drive's position: DiskGroup: 0, Span: 0, Arm: 0
+Enclosure position: N/A
+Device Id: 17
+WWN: 50014ee0af328bc9
+Sequence Number: 2
+Media Error Count: 4
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SATA
+
+Raw Size: 1.819 TB [0xe8e088b0 Sectors]
+Non Coerced Size: 1.818 TB [0xe8d088b0 Sectors]
+Coerced Size: 1.818 TB [0xe8d00000 Sectors]
+Sector Size:  512
+Logical Sector Size:  512
+Physical Sector Size:  512
+Firmware state: Online, Spun Up
+Commissioned Spare : No
+Emergency Spare : No
+Device Firmware Level: WA07
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x4433221103000000
+Connected Port Number: 0(path0)
+Inquiry Data: WMC6N0L5DK62        HGST HUS722T2TALA604                    RAGNWA07
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None
+Device Speed: 6.0Gb/s
+Link Speed: 6.0Gb/s
+Media Type: Hard Disk Device
+Drive:  Not Certified
+Drive Temperature :24C (75.20 F)
+PI Eligibility:  No
+Drive is formatted for PI information:  No
+PI: No PI
+Drive's NCQ setting : Enabled
+Port-0 :
+Port status: Active
+Port's Linkspeed: 6.0Gb/s
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+Enclosure Device ID: 252
+Slot Number: 4
+Drive's position: DiskGroup: 1, Span: 0, Arm: 0
+Enclosure position: N/A
+Device Id: 15
+WWN: 50014ee269af8e64
+Sequence Number: 2
+Media Error Count: 0
+Other Error Count: 0
+Predictive Failure Count: 0
+Last Predictive Failure Event Seq Number: 0
+PD Type: SATA
+
+Raw Size: 1.819 TB [0xe8e088b0 Sectors]
+Non Coerced Size: 1.818 TB [0xe8d088b0 Sectors]
+Coerced Size: 1.818 TB [0xe8d00000 Sectors]
+Sector Size:  512
+Logical Sector Size:  512
+Physical Sector Size:  4096
+Firmware state: Online, Spun Up
+Commissioned Spare : No
+Emergency Spare : No
+Device Firmware Level: 0B81
+Shield Counter: 0
+Successful diagnostics completion on :  N/A
+SAS Address(0): 0x4433221107000000
+Connected Port Number: 1(path0)
+Inquiry Data:      WD-WX62D71C524SWDC WD20EFZX-68AWUN0                    81.00B81
+FDE Capable: Not Capable
+FDE Enable: Disable
+Secured: Unsecured
+Locked: Unlocked
+Needs EKM Attention: No
+Foreign State: None
+Device Speed: 6.0Gb/s
+Link Speed: 6.0Gb/s
+Media Type: Hard Disk Device
+Drive:  Not Certified
+Drive Temperature :20C (68.00 F)
+PI Eligibility:  No
+Drive is formatted for PI information:  No
+PI: No PI
+Drive's NCQ setting : Enabled
+Port-0 :
+Port status: Active
+Port's Linkspeed: 6.0Gb/s
+Drive has flagged a S.M.A.R.T alert : No
+
+
+
+
+Exit Code: 0x00

@@ -1,0 +1,36 @@
+include:
+  # generic-pipeline-a1
+  - project: 'dfkzbt/gitlab-ci-utility'
+    ref: master
+    file: 'gitlab-ci/pipeline/generic-pipeline-a1.yml'
+  #
+  # build - maven
+  - project: 'dfkzbt/gitlab-ci-utility'
+    ref: master
+    file: 'gitlab-ci/pipeline/generic-build-maven.yml'
+  # test summary - maven
+  - project: 'dfkzbt/gitlab-ci-utility'
+    ref: master
+    file: 'gitlab-ci/pipeline/generic-test-summary-maven.yml'
+  #
+
+
+services:
+  - name: $EXT_REGISTRY_HOST/system/docker:20-dind
+    #command: [ "--registry-mirror", "http://10.174.18.249:5005" ]
+    variables:
+      LOCAL_DOCKER_DAEMON_OPTIONS: "--registry-mirror=${EXT_DOCKERHUB_PROXY}"
+    entrypoint: [ "sh", "-c", "dockerd-entrypoint.sh $LOCAL_DOCKER_DAEMON_OPTIONS" ]
+    alias: docker
+  #
+
+variables:
+  MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+
+
+cache:
+  paths:
+    - .m2/repository/
+#    - target/
+#    - ./**/target/
