@@ -2,22 +2,25 @@
 
 ## Description
 
-Docker Raid Metrics Prometheus Exporter is a Java-based application designed to collect and expose RAID metrics for Prometheus from LSI MegaRAID controllers. Running within a Docker container, it provides monitoring and alerting capabilities for RAID status, health, and performance.
+Docker Raid Metrics Prometheus Exporter is a Java-based application designed to collect and expose RAID metrics for Prometheus using `smartmontools` ([smartmontools.org](https://www.smartmontools.org/)) for LSI MegaRAID and similar controllers. Running within a Docker container, it provides monitoring and alerting capabilities for RAID disk health and status.
 
 Core Features:
-- RAID Health Monitoring: Collects health data from LSI MegaRAID controllers, including status of arrays, disks, and controllers.
-- Prometheus-Compatible Metrics: Exposes metrics in a format compatible with Prometheus, enabling easy integration into monitoring and alerting systems.
-- Customizable Scheduling: Uses cron expressions to control how frequently metrics are collected.
-- Flexible Configuration: Allows file paths, scheduling, and Prometheus endpoint settings to be customized via environment variables or system properties.
+- RAID Disk Health Monitoring via smartctl
+- Prometheus-Compatible Metrics
+- Customizable Scheduling via cron expressions
+- Configurable disk device list
+- Lightweight Dockerized deployment
+
+---
 
 ## Running with Docker
 
-This project provides simple scripts and a ready-to-use `docker-compose.yml` file for launching the RAID metrics exporter in a containerized environment.
+This project provides simple scripts and a ready-to-use `docker-compose.yml` for launching the exporter.
 
 ### Prerequisites
 
-- Docker installed and running
-- Optional: Prometheus configured to scrape `http://<host>:20222/metrics`
+- Docker
+- Prometheus scraping `http://<host>:20222/metrics`
 
 ### Usage
 
@@ -27,32 +30,19 @@ This project provides simple scripts and a ready-to-use `docker-compose.yml` fil
 ./docker.up.sh
 ```
 
-This will start the container using the official image:
-```
-byzatic/docker-raidmetrics-prometheus-exporter:main
-```
-
-#### View container logs
+#### View logs
 
 ```bash
 ./docker.logs.sh
 ```
 
-This tails the logs from the running container.
-
-#### Stop and remove the container
+#### Stop the container
 
 ```bash
 ./docker.down.sh
 ```
 
-This gracefully stops and removes the container and its network.
-
----
-
-### `docker-compose.yml`
-
-Below is the simplified `docker-compose.yml` used by the above scripts:
+### docker-compose.yml
 
 ```yaml
 version: '3.7'
@@ -64,8 +54,6 @@ services:
     ports:
       - "20222:8080"
     volumes:
-      # Optional configuration mount:
-      # - ${PWD}/configuration:/app/configuration
       - ${PWD}/logs:/app/logs
     logging:
       driver: json-file
@@ -81,65 +69,76 @@ networks:
     external: false
 ```
 
-## Documentation description for each application parameter
+---
 
-Application Parameters
-1.	cronExpressionString
-- Purpose: Defines the scheduling interval for periodic tasks within the application.
-- Type: String
-- Default: "*/5 * * * * ?" (Runs every 5 seconds)
-- Example: To set this to run every 10 minutes, specify -DcronExpressionString="0 0/10 * * * ?".
-- Usage: System.getProperty("cronExpressionString")
-2. megacliContentFilePath
-- Purpose: Specifies the file path where MegaCLI output content is stored. This file is typically used to read or write logs from MegaCLI, a command-line utility for managing LSI MegaRAID controllers.
-- Type: Path
-- Default: "data/megacli.log"
-- Example: To use a different file path, specify -DmegacliContentFilePath="/path/to/your/file.log".
-- Usage: System.getProperty("megacliContentFilePath")
-3.	megacliLockFilePath
-- Purpose: Specifies the file path for the MegaCLI lock file, which ensures exclusive access when reading or writing MegaCLI data.
-- Type: Path
-- Default: "data/megacli.log"
-- Example: To set a different lock file, specify -DmegacliLockFilePath="/path/to/lock/file.log".
-- Usage: System.getProperty("megacliLockFilePath")
-4. prometheusEndpointURL
-- Purpose: Sets the URL endpoint for Prometheus to access application metrics.
-- Type: URL
-- Default: http://0.0.0.0:8080/metrics
-- Example: To set a different Prometheus endpoint, specify -DprometheusEndpointURL="http://localhost:9090/metrics".
-- Usage: System.getProperty("prometheusEndpointURL")
+## Application Parameters
 
+```xml
+<Configuration>
+    <cronExpressionString>*/5 * * * * ?</cronExpressionString>
+    <prometheusEndpointURL>http://0.0.0.0:8080/metrics</prometheusEndpointURL>
+    <blockDevices>sda, sdb, sdc</blockDevices>
+</Configuration>
+```
 
-## LSI MegaRAID Disk Health Metrics
+- **cronExpressionString**: Defines scheduling interval. Default: `*/5 * * * * ?`
+- **prometheusEndpointURL**: Prometheus-compatible HTTP endpoint. Default: `http://0.0.0.0:8080/metrics`
+- **blockDevices**: Comma-separated list of devices to scan (e.g., `sda,sdb,sdc`)
 
-This set of Prometheus metrics provides insights into the health and status of disks managed by LSI MegaRAID. Each metric is labeled with the disk identifier (`disk_id`), allowing monitoring of specific disks.
+---
 
-### Metrics
+## Exported Metrics (smartctl-based)
 
-#### 1. `megaraid_disk_status`
-- **Description**: Indicates the health status of each disk.
-- **Values**:
-    - `1` for disks that are functioning correctly (OK).
-    - `0` for disks that have encountered a failure.
-- **Example**:
-    - `megaraid_disk_status{disk_id="15"} 1.0` shows that disk 15 is operating normally.
-    - `megaraid_disk_status{disk_id="17"} 1.0` shows that disk 17 is also operating normally.
+Each metric includes labels:
+- `disk_id`
+- `model`
+- `serial`
+- `mount_point`
 
-#### 2. `megaraid_disk_temperature`
-- **Description**: Provides the current temperature of each disk in Celsius.
-- **Example**:
-    - `megaraid_disk_temperature{disk_id="15"} 20.0` indicates that disk 15 is at 20°C.
-    - `megaraid_disk_temperature{disk_id="17"} 24.0` indicates that disk 17 is at 24°C.
+### Example Metrics
 
-#### 3. `megaraid_smart_alert`
-- **Description**: Represents the SMART (Self-Monitoring, Analysis, and Reporting Technology) alert status for each disk.
-- **Values**:
-    - `1` if an alert is flagged, indicating potential issues.
-    - `0` if no alert is flagged, suggesting that no problems have been detected.
-- **Example**:
-    - `megaraid_smart_alert{disk_id="15"} 0.0` shows that no alert is flagged for disk 15.
-    - `megaraid_smart_alert{disk_id="17"} 0.0` shows that no alert is flagged for disk 17.
+```text
+# HELP megaraid_current_pending_sectors Current pending sectors
+# TYPE megaraid_current_pending_sectors gauge
+megaraid_current_pending_sectors{disk_id="14",model="WDC WD4005FFBX-68CAUN0",mount_point="<not mounted>",serial="WD-BS01LX5H"} 0.0
+megaraid_current_pending_sectors{disk_id="15",model="WDC WD20EFZX-68AWUN0",mount_point="<not mounted>",serial="WD-WX62D71C524S"} 0.0
+megaraid_current_pending_sectors{disk_id="17",model="HGST HUS722T2TALA604",mount_point="<not mounted>",serial="WMC6N0L5DK62"} 1.0
 
-### Metric Type
+# HELP megaraid_offline_uncorrectable Offline uncorrectable sectors
+# TYPE megaraid_offline_uncorrectable gauge
+megaraid_offline_uncorrectable{disk_id="14",model="WDC WD4005FFBX-68CAUN0",mount_point="<not mounted>",serial="WD-BS01LX5H"} 0.0
+megaraid_offline_uncorrectable{disk_id="15",model="WDC WD20EFZX-68AWUN0",mount_point="<not mounted>",serial="WD-WX62D71C524S"} 0.0
+megaraid_offline_uncorrectable{disk_id="17",model="HGST HUS722T2TALA604",mount_point="<not mounted>",serial="WMC6N0L5DK62"} 0.0
 
-All these metrics are defined as **`gauge`** types, which are suitable for values that can vary over time. They provide essential health and diagnostic data for each disk in the array, useful for monitoring, alerting, and proactive disk management.
+# HELP megaraid_power_on_hours Power on hours per disk
+# TYPE megaraid_power_on_hours gauge
+megaraid_power_on_hours{disk_id="14",model="WDC WD4005FFBX-68CAUN0",mount_point="<not mounted>",serial="WD-BS01LX5H"} 2090.0
+megaraid_power_on_hours{disk_id="15",model="WDC WD20EFZX-68AWUN0",mount_point="<not mounted>",serial="WD-WX62D71C524S"} 25860.0
+megaraid_power_on_hours{disk_id="17",model="HGST HUS722T2TALA604",mount_point="<not mounted>",serial="WMC6N0L5DK62"} 49468.0
+
+# HELP megaraid_reallocated_sectors Reallocated sectors count per disk
+# TYPE megaraid_reallocated_sectors gauge
+megaraid_reallocated_sectors{disk_id="14",model="WDC WD4005FFBX-68CAUN0",mount_point="<not mounted>",serial="WD-BS01LX5H"} 0.0
+megaraid_reallocated_sectors{disk_id="15",model="WDC WD20EFZX-68AWUN0",mount_point="<not mounted>",serial="WD-WX62D71C524S"} 0.0
+megaraid_reallocated_sectors{disk_id="17",model="HGST HUS722T2TALA604",mount_point="<not mounted>",serial="WMC6N0L5DK62"} 0.0
+
+# HELP megaraid_smart_passed SMART overall health passed status (1=PASSED, 0=FAILED)
+# TYPE megaraid_smart_passed gauge
+megaraid_smart_passed{disk_id="14",model="WDC WD4005FFBX-68CAUN0",mount_point="<not mounted>",serial="WD-BS01LX5H"} 1.0
+megaraid_smart_passed{disk_id="15",model="WDC WD20EFZX-68AWUN0",mount_point="<not mounted>",serial="WD-WX62D71C524S"} 1.0
+megaraid_smart_passed{disk_id="17",model="HGST HUS722T2TALA604",mount_point="<not mounted>",serial="WMC6N0L5DK62"} 1.0
+
+# HELP megaraid_temperature_celsius Disk temperature in Celsius
+# TYPE megaraid_temperature_celsius gauge
+megaraid_temperature_celsius{disk_id="14",model="WDC WD4005FFBX-68CAUN0",mount_point="<not mounted>",serial="WD-BS01LX5H"} 26.0
+megaraid_temperature_celsius{disk_id="15",model="WDC WD20EFZX-68AWUN0",mount_point="<not mounted>",serial="WD-WX62D71C524S"} 25.0
+megaraid_temperature_celsius{disk_id="17",model="HGST HUS722T2TALA604",mount_point="<not mounted>",serial="WMC6N0L5DK62"} 28.0
+
+# HELP megaraid_udma_crc_errors UDMA CRC error count
+# TYPE megaraid_udma_crc_errors gauge
+megaraid_udma_crc_errors{disk_id="14",model="WDC WD4005FFBX-68CAUN0",mount_point="<not mounted>",serial="WD-BS01LX5H"} 0.0
+megaraid_udma_crc_errors{disk_id="15",model="WDC WD20EFZX-68AWUN0",mount_point="<not mounted>",serial="WD-WX62D71C524S"} 0.0
+megaraid_udma_crc_errors{disk_id="17",model="HGST HUS722T2TALA604",mount_point="<not mounted>",serial="WMC6N0L5DK62"} 0.0
+```
+
+These metrics allow real-time health inspection of disks behind MegaRAID with minimal overhead.
