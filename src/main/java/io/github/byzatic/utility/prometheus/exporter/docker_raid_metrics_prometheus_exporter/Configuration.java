@@ -41,7 +41,6 @@ public class Configuration {
 
     public static final String CRON_EXPRESSION_STRING;
     public static final URL PROMETHEUS_URL;
-    public static final List<String> BLOCK_DEVICES;
 
     static {
         try {
@@ -53,9 +52,6 @@ public class Configuration {
 
             CRON_EXPRESSION_STRING = config.getString("cronExpressionString");
             PROMETHEUS_URL = new URI(config.getString("prometheusEndpointURL")).toURL();
-            String blockDevicesString = config.getString("blockDevices");
-            if (blockDevicesString == null || blockDevicesString.isEmpty()) throw new RuntimeException("Empty blockDevices");
-            BLOCK_DEVICES = List.of(blockDevicesString.split("\\s*,\\s*"));
         } catch (MalformedURLException | URISyntaxException e) {
             logger.error("Exception : " + ExceptionUtils.getStackTrace(e));
             throw new RuntimeException("Error reading URL", e);
