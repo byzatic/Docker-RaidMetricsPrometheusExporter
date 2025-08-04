@@ -14,7 +14,7 @@ public class App {
     public static void main( String[] args ) {
         logger.debug("MegaRAID metrics service is running...");
 
-        RAIDMetricsCollectorInterface collector = new RAIDMetricsCollector(new SmartCTLReader(Configuration.BLOCK_DEVICES));
+        RAIDMetricsCollectorInterface collector = new RAIDMetricsCollector(new SmartCTLReader());
         RAIDMetricsServiceInterface megaRAIDMetricsService = new RAIDMetricsService(Configuration.PROMETHEUS_URL, Configuration.CRON_EXPRESSION_STRING, collector);
 
         try {
