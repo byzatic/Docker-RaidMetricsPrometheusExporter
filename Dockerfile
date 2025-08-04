@@ -1,8 +1,5 @@
 # Step 1: Use Maven image to build the application
-FROM maven:3.8.6-eclipse-temurin-17 AS build
-
-# Set maven package proxy
-ARG MAVEN_PACKAGE_PROXY=http://10.174.18.94:8081
+FROM --platform=linux/amd64 docker.io/maven:3.8.6-eclipse-temurin-17 AS build
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -23,7 +20,7 @@ COPY src ./src
 RUN mvn package -DskipTests
 
 # Step 2: Use a JRE image to run the application and install PostgreSQL client tools
-FROM --platform=linux/amd64  debian:12.5
+FROM --platform=linux/amd64 docker.io/library/debian:12.5
 
 # Установка OpenJDK, smartmontools + Garbage collecting stage
 RUN apt update && apt install -y openjdk-17-jre smartmontools && \

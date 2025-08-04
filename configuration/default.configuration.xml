@@ -1,5 +1,4 @@
 <Configuration>
     <cronExpressionString>*/5 * * * * ?</cronExpressionString>
     <prometheusEndpointURL>http://0.0.0.0:8080/metrics</prometheusEndpointURL>
-    <blockDevices>sda, sdb, sdc</blockDevices>
 </Configuration>
