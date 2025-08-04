@@ -4,7 +4,7 @@ public class MegaRAIDDiskInfo {
     public int diskId;
     public String model;
     public String serial;
-    public String mountPoint;
+    public String deviceName;
     public String smartStatus;
     public int reallocatedSectors;
     public int powerOnHours;

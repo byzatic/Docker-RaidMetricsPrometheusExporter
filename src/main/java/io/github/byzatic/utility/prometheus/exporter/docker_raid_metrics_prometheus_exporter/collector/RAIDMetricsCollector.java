@@ -52,7 +52,7 @@ public class RAIDMetricsCollector implements RAIDMetricsCollectorInterface {
     private static final Gauge smartPassed = Gauge.builder()
             .name("megaraid_smart_passed")
             .help("SMART overall health passed status (1=PASSED, 0=FAILED)")
-            .labelNames("disk_id", "model", "serial", "mount_point")
+            .labelNames("disk_id", "model", "serial", "device_name")
             .register();
 
     public RAIDMetricsCollector(SmartCTLReader reader) {
@@ -68,7 +68,7 @@ public class RAIDMetricsCollector implements RAIDMetricsCollectorInterface {
                         String.valueOf(disk.diskId),
                         disk.model != null ? disk.model : "unknown",
                         disk.serial != null ? disk.serial : "unknown",
-                        disk.mountPoint != null ? disk.mountPoint : "<not mounted>"
+                        disk.deviceName != null ? disk.deviceName : "<not mounted>"
                 };
 
                 smartPassed.labelValues(labels).set("PASSED".equalsIgnoreCase(disk.smartStatus) ? 1 : 0);

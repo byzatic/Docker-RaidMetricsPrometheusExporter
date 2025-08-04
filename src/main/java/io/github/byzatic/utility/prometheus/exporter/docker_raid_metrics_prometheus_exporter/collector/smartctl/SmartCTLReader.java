@@ -46,7 +46,7 @@ public class SmartCTLReader {
 
                 MegaRAIDDiskInfo disk = new MegaRAIDDiskInfo();
                 disk.diskId = extractMegaRAIDIndex(device.driver);
-                disk.mountPoint = "<not mounted>";
+                disk.deviceName = device.dev;
 
                 boolean found = false;
                 String line;
