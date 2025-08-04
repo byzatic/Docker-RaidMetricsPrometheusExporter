@@ -1,8 +1,9 @@
 package io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.collector.smartctl;
 
 import com.google.gson.Gson;
-import io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.collector.smartctl.dto.SmartctlDevice;
-import io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.collector.smartctl.dto.SmartctlScanResult;
+import io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.collector.smartctl.dto.read.SmartctlDiskJson;
+import io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.collector.smartctl.dto.scan.SmartctlDevice;
+import io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.collector.smartctl.dto.scan.SmartctlScanResult;
 import io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.model.MegaRAIDDiskInfo;
 import io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.collector.exceptions.CollectorException;
 import org.slf4j.Logger;
@@ -25,70 +26,72 @@ public class SmartCTLReader {
         for (DeviceEntry device : allDevices) {
             logger.debug("process device: {}", device);
             if (hasMegaRAID && !device.driver.startsWith("megaraid")) {
-                logger.debug("Dkip regular device");
-                continue; // если есть megaraid-диски — игнорируем обычные
+                logger.debug("Skip regular device");
+                continue;
             }
 
             try {
                 List<String> cmd = new ArrayList<>();
                 cmd.add("smartctl");
                 cmd.add("-a");
-
+                cmd.add("-j");
                 if (device.driver.startsWith("megaraid")) {
                     cmd.add("-d");
                     cmd.add(device.driver);
                 }
                 cmd.add(device.dev);
 
-                ProcessBuilder pb = new ProcessBuilder(cmd);
-                logger.debug("try to run {}", pb.command());
-                Process process = pb.start();
+                logger.debug("try to run {}", cmd);
+                Process process = new ProcessBuilder(cmd).start();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                StringBuilder jsonBuilder = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    jsonBuilder.append(line);
+                }
+                process.waitFor();
+
+                SmartctlDiskJson json = new Gson().fromJson(jsonBuilder.toString(), SmartctlDiskJson.class);
+
+                // проверка формата
+                if (json.json_format_version == null || json.json_format_version.size() != 2 ||
+                        json.json_format_version.get(0) != 1 || json.json_format_version.get(1) != 0) {
+                    throw new CollectorException("Unsupported smartctl json_format_version");
+                }
 
                 MegaRAIDDiskInfo disk = new MegaRAIDDiskInfo();
                 disk.diskId = extractMegaRAIDIndex(device.driver);
                 disk.deviceName = device.dev;
+                disk.model = json.model_name;
+                disk.serial = json.serial_number;
+                disk.smartStatus = json.smart_status != null && json.smart_status.passed ? "PASSED" : "FAILED";
+                disk.temperatureCelsius = json.temperature != null ? json.temperature.current : -1;
+                disk.powerOnHours = json.power_on_time != null ? json.power_on_time.hours : -1;
+                disk.reallocatedSectors = getRawValue(json, "Reallocated_Sector_Ct");
+                disk.currentPendingSectors = getRawValue(json, "Current_Pending_Sector");
+                disk.offlineUncorrectable = getRawValue(json, "Offline_Uncorrectable");
+                disk.udmaCrcErrors = getRawValue(json, "UDMA_CRC_Error_Count");
 
-                boolean found = false;
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    logger.trace("Line parser; line is {}", line);
-                    if (line.contains("Device Model")) {
-                        disk.model = line.split(":", 2)[1].trim();
-                        found = true;
-                    } else if (line.contains("Serial Number")) {
-                        disk.serial = line.split(":", 2)[1].trim();
-                    } else if (line.contains("SMART overall-health")) {
-                        disk.smartStatus = line.split(":", 2)[1].trim();
-                    } else if (line.contains("Reallocated_Sector_Ct")) {
-                        disk.reallocatedSectors = extractSmartValue(line);
-                    } else if (line.contains("Power_On_Hours")) {
-                        disk.powerOnHours = extractSmartValue(line);
-                    } else if (line.contains("Temperature_Celsius")) {
-                        disk.temperatureCelsius = extractSmartValue(line);
-                    } else if (line.contains("Current_Pending_Sector")) {
-                        disk.currentPendingSectors = extractSmartValue(line);
-                    } else if (line.contains("Offline_Uncorrectable")) {
-                        disk.offlineUncorrectable = extractSmartValue(line);
-                    } else if (line.contains("UDMA_CRC_Error_Count")) {
-                        disk.udmaCrcErrors = extractSmartValue(line);
-                    }
-                }
+                disks.add(disk);
+                logger.debug("Device {} parsed successfully", device);
 
-                if (found) {
-                    logger.debug("Device {} processed correctly", device);
-                    disks.add(disk);
-                } else {
-                    logger.debug("Device {} is not processed correctly", device);
-                }
-
-                process.waitFor();
             } catch (Exception e) {
-                logger.debug("Device {} not accessible or not present.", device.dev);
+                logger.warn("Failed to parse device {}: {}", device, e.getMessage());
             }
         }
 
         return disks;
+    }
+
+    private int getRawValue(SmartctlDiskJson json, String name) {
+        if (json.ata_smart_attributes != null && json.ata_smart_attributes.table != null) {
+            return json.ata_smart_attributes.table.stream()
+                    .filter(attr -> name.equals(attr.name))
+                    .findFirst()
+                    .map(attr -> attr.raw != null ? attr.raw.value : -1)
+                    .orElse(-1);
+        }
+        return -1;
     }
 
     private List<DeviceEntry> scanDevices() throws CollectorException {
@@ -137,15 +140,6 @@ public class SmartCTLReader {
 
         logger.debug("Scan devices result: {}", devices);
         return devices;
-    }
-
-    private int extractSmartValue(String line) {
-        String[] parts = line.trim().split("\\s+");
-        try {
-            return Integer.parseInt(parts[parts.length - 1]);
-        } catch (Exception e) {
-            return -1;
-        }
     }
 
     private int extractMegaRAIDIndex(String driver) {
