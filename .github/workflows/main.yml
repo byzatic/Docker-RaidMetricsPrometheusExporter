@@ -160,6 +160,7 @@ jobs:
         run: |
           buildah bud \
             --tag docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:sha-${{ steps.vars.outputs.short_sha }} \
+            --tag docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ steps.vars.outputs.branch_name }} \
             $( [[ "${{ steps.vars.outputs.branch_name }}" == "main" ]] && echo "--tag docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest" ) \
             $( [[ "${{ steps.vars.outputs.branch_name }}" == "main" ]] && echo "--tag docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:main" ) \
             --file Dockerfile .
