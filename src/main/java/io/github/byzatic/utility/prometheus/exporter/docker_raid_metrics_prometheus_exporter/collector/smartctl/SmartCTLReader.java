@@ -126,5 +126,13 @@ public class SmartCTLReader {
             this.dev = dev;
             this.driver = driver;
         }
+
+        @Override
+        public String toString() {
+            return "DeviceEntry{" +
+                    "dev='" + dev + '\'' +
+                    ", driver='" + driver + '\'' +
+                    '}';
+        }
     }
 }
