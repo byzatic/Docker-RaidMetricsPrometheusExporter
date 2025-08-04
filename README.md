@@ -77,13 +77,11 @@ networks:
 <Configuration>
     <cronExpressionString>*/5 * * * * ?</cronExpressionString>
     <prometheusEndpointURL>http://0.0.0.0:8080/metrics</prometheusEndpointURL>
-    <blockDevices>sda, sdb, sdc</blockDevices>
 </Configuration>
 ```
 
 - **cronExpressionString**: Defines scheduling interval. Default: `*/5 * * * * ?`
 - **prometheusEndpointURL**: Prometheus-compatible HTTP endpoint. Default: `http://0.0.0.0:8080/metrics`
-- **blockDevices**: Comma-separated list of devices to scan (e.g., `sda,sdb,sdc`)
 
 ---
 
@@ -93,7 +91,7 @@ Each metric includes labels:
 - `disk_id`
 - `model`
 - `serial`
-- `mount_point`
+- `device_name`
 
 ### Example Metrics
 

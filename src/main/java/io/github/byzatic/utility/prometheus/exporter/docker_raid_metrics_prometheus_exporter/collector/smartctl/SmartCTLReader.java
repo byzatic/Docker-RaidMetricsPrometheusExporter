@@ -1,5 +1,8 @@
 package io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.collector.smartctl;
 
+import com.google.gson.Gson;
+import io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.collector.smartctl.dto.SmartctlDevice;
+import io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.collector.smartctl.dto.SmartctlScanResult;
 import io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.model.MegaRAIDDiskInfo;
 import io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.collector.exceptions.CollectorException;
 import org.slf4j.Logger;
@@ -8,8 +11,6 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class SmartCTLReader {
     private final static Logger logger = LoggerFactory.getLogger(SmartCTLReader.class);
@@ -93,22 +94,45 @@ public class SmartCTLReader {
     private List<DeviceEntry> scanDevices() throws CollectorException {
         logger.debug("Starts scan devices");
         List<DeviceEntry> devices = new ArrayList<>();
-        Pattern scanPattern = Pattern.compile("(?<dev>/dev/\\S+)\\s+-d\\s+(?<driver>\\S+)");
 
         try {
-            Process process = new ProcessBuilder("smartctl", "--scan").start();
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    Matcher matcher = scanPattern.matcher(line);
-                    if (matcher.find()) {
-                        devices.add(new DeviceEntry(matcher.group("dev"), matcher.group("driver")));
-                    }
-                }
+            Process process = new ProcessBuilder("smartctl", "--scan", "-j").start();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+            // Чтение всего JSON в строку
+            StringBuilder jsonBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                jsonBuilder.append(line);
             }
+
             process.waitFor();
+
+            String json = jsonBuilder.toString();
+            Gson gson = new Gson();
+
+            SmartctlScanResult result = gson.fromJson(json, SmartctlScanResult.class);
+
+            // Валидация версии JSON
+            if (result.json_format_version == null || result.json_format_version.size() != 2 ||
+                    result.json_format_version.get(0) != 1 || result.json_format_version.get(1) != 0) {
+                throw new CollectorException("Unsupported or missing json_format_version: " + result.json_format_version);
+            }
+
+            // Валидация устройств
+            if (result.devices == null || result.devices.isEmpty()) {
+                throw new CollectorException("No devices found in smartctl JSON output");
+            }
+
+            for (SmartctlDevice device : result.devices) {
+                if (device.name == null || device.type == null) {
+                    throw new CollectorException("Invalid device entry: " + device);
+                }
+                devices.add(new DeviceEntry(device.name, device.type));
+            }
+
         } catch (Exception e) {
-            throw new CollectorException("Failed to execute smartctl --scan", e);
+            throw new CollectorException("Failed to parse smartctl --scan -j output", e);
         }
 
         logger.debug("Scan devices result: {}", devices);
