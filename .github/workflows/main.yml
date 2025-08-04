@@ -144,16 +144,13 @@ jobs:
         id: vars
         run: |
           echo "short_sha=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
-          
-          # Определяем имя ветки
-          if [[ "${GITHUB_REF_TYPE}" == "branch" ]]; then
-            branch="${GITHUB_REF##*/}"
-          elif [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
-            branch="${{ github.event.pull_request.head.ref }}"
+
+          if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]]; then
+            echo "branch_name=${GITHUB_HEAD_REF//\//-}" >> "$GITHUB_OUTPUT"
           else
-            branch="unknown"
+            ref="${GITHUB_REF##refs/heads/}"
+            echo "branch_name=${ref//\//-}" >> "$GITHUB_OUTPUT"
           fi
-          echo "branch_name=$branch" >> "$GITHUB_OUTPUT"
 
       - name: Login to DockerHub
         run: |
