@@ -19,9 +19,12 @@ public class SmartCTLReader {
         List<DeviceEntry> allDevices = scanDevices();
 
         boolean hasMegaRAID = allDevices.stream().anyMatch(dev -> dev.driver.startsWith("megaraid"));
+        logger.debug("hasMegaRAID is {}", hasMegaRAID);
 
         for (DeviceEntry device : allDevices) {
+            logger.debug("process device: {}", device);
             if (hasMegaRAID && !device.driver.startsWith("megaraid")) {
+                logger.debug("hasMegaRAID is {} and device driver not starts with \"megaraid\"; skip device", hasMegaRAID);
                 continue; // если есть megaraid-диски — игнорируем обычные
             }
 
@@ -73,6 +76,7 @@ public class SmartCTLReader {
     }
 
     private List<DeviceEntry> scanDevices() throws CollectorException {
+        logger.debug("Starts scan devices");
         List<DeviceEntry> devices = new ArrayList<>();
         Pattern scanPattern = Pattern.compile("(?<dev>/dev/\\S+)\\s+-d\\s+(?<driver>\\S+)");
 
@@ -92,6 +96,7 @@ public class SmartCTLReader {
             throw new CollectorException("Failed to execute smartctl --scan", e);
         }
 
+        logger.debug("Scan devices result: {}", devices);
         return devices;
     }
 
