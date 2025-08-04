@@ -24,12 +24,13 @@ public class SmartCTLReader {
         for (DeviceEntry device : allDevices) {
             logger.debug("process device: {}", device);
             if (hasMegaRAID && !device.driver.startsWith("megaraid")) {
-                logger.debug("hasMegaRAID is {} and device driver not starts with \"megaraid\"; skip device", hasMegaRAID);
+                logger.debug("Dkip regular device");
                 continue; // если есть megaraid-диски — игнорируем обычные
             }
 
             try {
                 ProcessBuilder pb = new ProcessBuilder("smartctl", "-a", "-d", device.driver, device.dev);
+                logger.debug("try to run {}", pb.command());
                 Process process = pb.start();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
@@ -40,6 +41,7 @@ public class SmartCTLReader {
                 boolean found = false;
                 String line;
                 while ((line = reader.readLine()) != null) {
+                    logger.debug("Line parser; line is {}", line);
                     if (line.contains("Device Model")) {
                         disk.model = line.split(":", 2)[1].trim();
                         found = true;
@@ -63,7 +65,10 @@ public class SmartCTLReader {
                 }
 
                 if (found) {
+                    logger.debug("Device {} processed correctly", device);
                     disks.add(disk);
+                } else {
+                    logger.debug("Device {} is not processed correctly", device);
                 }
 
                 process.waitFor();
