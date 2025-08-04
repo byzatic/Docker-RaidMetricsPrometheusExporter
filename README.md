@@ -98,45 +98,45 @@ Each metric includes labels:
 ```text
 # HELP megaraid_current_pending_sectors Current pending sectors
 # TYPE megaraid_current_pending_sectors gauge
-megaraid_current_pending_sectors{disk_id="14",model="WDC WD4005FFBX-68CAUN0",mount_point="<not mounted>",serial="WD-BS01LX5H"} 0.0
-megaraid_current_pending_sectors{disk_id="15",model="WDC WD20EFZX-68AWUN0",mount_point="<not mounted>",serial="WD-WX62D71C524S"} 0.0
-megaraid_current_pending_sectors{disk_id="17",model="HGST HUS722T2TALA604",mount_point="<not mounted>",serial="WMC6N0L5DK62"} 1.0
+megaraid_current_pending_sectors{disk_id="14",model="WDC WD4005FFBX-68CAUN0",mount_point="/dev/bus/1",serial="WD-BS01LX5H"} 0.0
+megaraid_current_pending_sectors{disk_id="15",model="WDC WD20EFZX-68AWUN0",mount_point="/dev/bus/1",serial="WD-WX62D71C524S"} 0.0
+megaraid_current_pending_sectors{disk_id="17",model="HGST HUS722T2TALA604",mount_point="/dev/bus/1",serial="WMC6N0L5DK62"} 1.0
 
 # HELP megaraid_offline_uncorrectable Offline uncorrectable sectors
 # TYPE megaraid_offline_uncorrectable gauge
-megaraid_offline_uncorrectable{disk_id="14",model="WDC WD4005FFBX-68CAUN0",mount_point="<not mounted>",serial="WD-BS01LX5H"} 0.0
-megaraid_offline_uncorrectable{disk_id="15",model="WDC WD20EFZX-68AWUN0",mount_point="<not mounted>",serial="WD-WX62D71C524S"} 0.0
-megaraid_offline_uncorrectable{disk_id="17",model="HGST HUS722T2TALA604",mount_point="<not mounted>",serial="WMC6N0L5DK62"} 0.0
+megaraid_offline_uncorrectable{disk_id="14",model="WDC WD4005FFBX-68CAUN0",mount_point="/dev/bus/1",serial="WD-BS01LX5H"} 0.0
+megaraid_offline_uncorrectable{disk_id="15",model="WDC WD20EFZX-68AWUN0",mount_point="/dev/bus/1",serial="WD-WX62D71C524S"} 0.0
+megaraid_offline_uncorrectable{disk_id="17",model="HGST HUS722T2TALA604",mount_point="/dev/bus/1",serial="WMC6N0L5DK62"} 0.0
 
 # HELP megaraid_power_on_hours Power on hours per disk
 # TYPE megaraid_power_on_hours gauge
-megaraid_power_on_hours{disk_id="14",model="WDC WD4005FFBX-68CAUN0",mount_point="<not mounted>",serial="WD-BS01LX5H"} 2090.0
-megaraid_power_on_hours{disk_id="15",model="WDC WD20EFZX-68AWUN0",mount_point="<not mounted>",serial="WD-WX62D71C524S"} 25860.0
-megaraid_power_on_hours{disk_id="17",model="HGST HUS722T2TALA604",mount_point="<not mounted>",serial="WMC6N0L5DK62"} 49468.0
+megaraid_power_on_hours{disk_id="14",model="WDC WD4005FFBX-68CAUN0",mount_point="/dev/bus/1",serial="WD-BS01LX5H"} 2329.0
+megaraid_power_on_hours{disk_id="15",model="WDC WD20EFZX-68AWUN0",mount_point="/dev/bus/1",serial="WD-WX62D71C524S"} 26098.0
+megaraid_power_on_hours{disk_id="17",model="HGST HUS722T2TALA604",mount_point="/dev/bus/1",serial="WMC6N0L5DK62"} 49707.0
 
 # HELP megaraid_reallocated_sectors Reallocated sectors count per disk
 # TYPE megaraid_reallocated_sectors gauge
-megaraid_reallocated_sectors{disk_id="14",model="WDC WD4005FFBX-68CAUN0",mount_point="<not mounted>",serial="WD-BS01LX5H"} 0.0
-megaraid_reallocated_sectors{disk_id="15",model="WDC WD20EFZX-68AWUN0",mount_point="<not mounted>",serial="WD-WX62D71C524S"} 0.0
-megaraid_reallocated_sectors{disk_id="17",model="HGST HUS722T2TALA604",mount_point="<not mounted>",serial="WMC6N0L5DK62"} 0.0
+megaraid_reallocated_sectors{disk_id="14",model="WDC WD4005FFBX-68CAUN0",mount_point="/dev/bus/1",serial="WD-BS01LX5H"} 0.0
+megaraid_reallocated_sectors{disk_id="15",model="WDC WD20EFZX-68AWUN0",mount_point="/dev/bus/1",serial="WD-WX62D71C524S"} 0.0
+megaraid_reallocated_sectors{disk_id="17",model="HGST HUS722T2TALA604",mount_point="/dev/bus/1",serial="WMC6N0L5DK62"} 0.0
 
 # HELP megaraid_smart_passed SMART overall health passed status (1=PASSED, 0=FAILED)
 # TYPE megaraid_smart_passed gauge
-megaraid_smart_passed{disk_id="14",model="WDC WD4005FFBX-68CAUN0",mount_point="<not mounted>",serial="WD-BS01LX5H"} 1.0
-megaraid_smart_passed{disk_id="15",model="WDC WD20EFZX-68AWUN0",mount_point="<not mounted>",serial="WD-WX62D71C524S"} 1.0
-megaraid_smart_passed{disk_id="17",model="HGST HUS722T2TALA604",mount_point="<not mounted>",serial="WMC6N0L5DK62"} 1.0
+megaraid_smart_passed{device_name="/dev/bus/1",disk_id="14",model="WDC WD4005FFBX-68CAUN0",serial="WD-BS01LX5H"} 1.0
+megaraid_smart_passed{device_name="/dev/bus/1",disk_id="15",model="WDC WD20EFZX-68AWUN0",serial="WD-WX62D71C524S"} 1.0
+megaraid_smart_passed{device_name="/dev/bus/1",disk_id="17",model="HGST HUS722T2TALA604",serial="WMC6N0L5DK62"} 1.0
 
 # HELP megaraid_temperature_celsius Disk temperature in Celsius
 # TYPE megaraid_temperature_celsius gauge
-megaraid_temperature_celsius{disk_id="14",model="WDC WD4005FFBX-68CAUN0",mount_point="<not mounted>",serial="WD-BS01LX5H"} 26.0
-megaraid_temperature_celsius{disk_id="15",model="WDC WD20EFZX-68AWUN0",mount_point="<not mounted>",serial="WD-WX62D71C524S"} 25.0
-megaraid_temperature_celsius{disk_id="17",model="HGST HUS722T2TALA604",mount_point="<not mounted>",serial="WMC6N0L5DK62"} 28.0
+megaraid_temperature_celsius{disk_id="14",model="WDC WD4005FFBX-68CAUN0",mount_point="/dev/bus/1",serial="WD-BS01LX5H"} 28.0
+megaraid_temperature_celsius{disk_id="15",model="WDC WD20EFZX-68AWUN0",mount_point="/dev/bus/1",serial="WD-WX62D71C524S"} 27.0
+megaraid_temperature_celsius{disk_id="17",model="HGST HUS722T2TALA604",mount_point="/dev/bus/1",serial="WMC6N0L5DK62"} 30.0
 
 # HELP megaraid_udma_crc_errors UDMA CRC error count
 # TYPE megaraid_udma_crc_errors gauge
-megaraid_udma_crc_errors{disk_id="14",model="WDC WD4005FFBX-68CAUN0",mount_point="<not mounted>",serial="WD-BS01LX5H"} 0.0
-megaraid_udma_crc_errors{disk_id="15",model="WDC WD20EFZX-68AWUN0",mount_point="<not mounted>",serial="WD-WX62D71C524S"} 0.0
-megaraid_udma_crc_errors{disk_id="17",model="HGST HUS722T2TALA604",mount_point="<not mounted>",serial="WMC6N0L5DK62"} 0.0
+megaraid_udma_crc_errors{disk_id="14",model="WDC WD4005FFBX-68CAUN0",mount_point="/dev/bus/1",serial="WD-BS01LX5H"} 0.0
+megaraid_udma_crc_errors{disk_id="15",model="WDC WD20EFZX-68AWUN0",mount_point="/dev/bus/1",serial="WD-WX62D71C524S"} 0.0
+megaraid_udma_crc_errors{disk_id="17",model="HGST HUS722T2TALA604",mount_point="/dev/bus/1",serial="WMC6N0L5DK62"} 0.0
 ```
 
 These metrics allow real-time health inspection of disks behind MegaRAID with minimal overhead.
