@@ -29,7 +29,17 @@ public class SmartCTLReader {
             }
 
             try {
-                ProcessBuilder pb = new ProcessBuilder("smartctl", "-a", "-d", device.driver, device.dev);
+                List<String> cmd = new ArrayList<>();
+                cmd.add("smartctl");
+                cmd.add("-a");
+
+                if (device.driver.startsWith("megaraid")) {
+                    cmd.add("-d");
+                    cmd.add(device.driver);
+                }
+                cmd.add(device.dev);
+
+                ProcessBuilder pb = new ProcessBuilder(cmd);
                 logger.debug("try to run {}", pb.command());
                 Process process = pb.start();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -41,7 +51,7 @@ public class SmartCTLReader {
                 boolean found = false;
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    logger.debug("Line parser; line is {}", line);
+                    logger.trace("Line parser; line is {}", line);
                     if (line.contains("Device Model")) {
                         disk.model = line.split(":", 2)[1].trim();
                         found = true;
