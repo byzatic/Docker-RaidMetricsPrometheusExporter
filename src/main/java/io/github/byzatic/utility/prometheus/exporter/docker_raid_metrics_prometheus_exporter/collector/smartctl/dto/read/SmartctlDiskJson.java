@@ -34,6 +34,6 @@ public class SmartctlDiskJson {
     }
 
     public static class RawValue {
-        public int value;
+        public long value;
     }
 }

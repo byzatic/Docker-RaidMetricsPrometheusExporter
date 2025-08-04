@@ -6,10 +6,10 @@ public class MegaRAIDDiskInfo {
     public String serial;
     public String deviceName;
     public String smartStatus;
-    public int reallocatedSectors;
+    public long reallocatedSectors;
     public int powerOnHours;
     public int temperatureCelsius;
-    public int currentPendingSectors;
-    public int offlineUncorrectable;
-    public int udmaCrcErrors;
+    public long currentPendingSectors;
+    public long offlineUncorrectable;
+    public long udmaCrcErrors;
 }

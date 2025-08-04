@@ -83,15 +83,15 @@ public class SmartCTLReader {
         return disks;
     }
 
-    private int getRawValue(SmartctlDiskJson json, String name) {
+    private long getRawValue(SmartctlDiskJson json, String name) {
         if (json.ata_smart_attributes != null && json.ata_smart_attributes.table != null) {
             return json.ata_smart_attributes.table.stream()
                     .filter(attr -> name.equals(attr.name))
                     .findFirst()
                     .map(attr -> attr.raw != null ? attr.raw.value : -1)
-                    .orElse(-1);
+                    .orElse(-1L);
         }
-        return -1;
+        return -1L;
     }
 
     private List<DeviceEntry> scanDevices() throws CollectorException {
