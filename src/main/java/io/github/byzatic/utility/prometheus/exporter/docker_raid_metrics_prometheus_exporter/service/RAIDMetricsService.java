@@ -10,6 +10,7 @@ import io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometh
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 public class RAIDMetricsService implements RAIDMetricsServiceInterface {
 
@@ -42,11 +43,14 @@ public class RAIDMetricsService implements RAIDMetricsServiceInterface {
             JobDetail jobDetail = new JobDetail(updateMetricsProcess, cronExpressionString);
             scheduler.addTask(jobDetail);
             do {
+                TimeUnit.MILLISECONDS.sleep(100);; // TODO: tmp patch while wating for new scheduler
                 scheduler.runAllTasks(true);
                 if (updateMetricsProcess.healthStatus != 0) {
                     throw new RuntimeException("Update metrics process finished with error");
                 }
             } while (state == 0);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
     @Override
