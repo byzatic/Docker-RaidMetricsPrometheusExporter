@@ -25,6 +25,7 @@
     <version.junit>4.13.1</version.junit>
     <version.postgresql>42.7.4</version.postgresql>
     <version.java_byzatic_commons>0.0.6</version.java_byzatic_commons>
+    <version.prometheus>1.3.8</version.prometheus>
   </properties>
   <!-- manual set end -->
 
@@ -69,21 +70,21 @@
     <dependency>
       <groupId>io.prometheus</groupId>
       <artifactId>prometheus-metrics-core</artifactId>
-      <version>1.0.0</version>
+      <version>${version.prometheus}</version>
       <scope>compile</scope>
     </dependency>
 
     <dependency>
       <groupId>io.prometheus</groupId>
       <artifactId>prometheus-metrics-instrumentation-jvm</artifactId>
-      <version>1.0.0</version>
+      <version>${version.prometheus}</version>
       <scope>compile</scope>
     </dependency>
 
     <dependency>
       <groupId>io.prometheus</groupId>
       <artifactId>prometheus-metrics-exporter-httpserver</artifactId>
-      <version>1.0.0</version>
+      <version>${version.prometheus}</version>
       <scope>compile</scope>
     </dependency>
 
