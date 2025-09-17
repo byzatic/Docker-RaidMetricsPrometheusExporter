@@ -8,7 +8,7 @@ import java.util.UUID;
 public class JobDetail {
     private final String uniqueId;
     private final Runnable job;
-    private final  CronDateCalculator calculator;
+    private final CronDateCalculator calculator;
     private final String rawCronExpressionString;
 
     // Копирующий конструктор

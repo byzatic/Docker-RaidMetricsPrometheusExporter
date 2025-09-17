@@ -1,12 +1,11 @@
 package io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.collector.RAIDMetricsCollectorInterface;
-
-import io.prometheus.metrics.exporter.httpserver.HTTPServer;
 import io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.service.Scheduler.JobDetail;
 import io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.service.Scheduler.Scheduler;
+import io.prometheus.metrics.exporter.httpserver.HTTPServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URL;
@@ -35,7 +34,7 @@ public class RAIDMetricsService implements RAIDMetricsServiceInterface {
     @Override
     public void run() throws IOException {
         try (HTTPServer server = HTTPServer.builder().hostname(address).port(port).buildAndStart()) {
-            logger.debug("HTTPServer listening on port http://{}:{}{}", address,  port, "/metrics");
+            logger.debug("HTTPServer listening on port http://{}:{}{}", address, port, "/metrics");
             logger.warn("HTTPServer using default location {}", "/metrics");
 
             Process updateMetricsProcess = new Process(collector);
@@ -43,7 +42,8 @@ public class RAIDMetricsService implements RAIDMetricsServiceInterface {
             JobDetail jobDetail = new JobDetail(updateMetricsProcess, cronExpressionString);
             scheduler.addTask(jobDetail);
             do {
-                TimeUnit.MILLISECONDS.sleep(100);; // TODO: tmp patch while wating for new scheduler
+                TimeUnit.MILLISECONDS.sleep(100);
+                ; // TODO: tmp patch while wating for new scheduler
                 scheduler.runAllTasks(true);
                 if (updateMetricsProcess.healthStatus != 0) {
                     throw new RuntimeException("Update metrics process finished with error");
@@ -53,12 +53,13 @@ public class RAIDMetricsService implements RAIDMetricsServiceInterface {
             throw new RuntimeException(e);
         }
     }
+
     @Override
     public void terminate() {
         state = 1;
     }
 
-    private static class Process implements Runnable{
+    private static class Process implements Runnable {
         private final RAIDMetricsCollectorInterface collector;
 
         public Integer healthStatus = 0;

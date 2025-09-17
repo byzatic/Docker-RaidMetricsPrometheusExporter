@@ -7,27 +7,28 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/** пример использования
- *
- *         try {
- *             // Пример использования с cron-выражением
- *             CronDateCalculator calculator = new CronDateCalculator("0 0/5 * * * ?"); // Каждые 5 минут
- *             Date now = new Date();
- *
- *             // Получение следующей даты
- *             Date nextExecution = calculator.getNextExecutionDate(now);
- *             System.out.println("Next execution date: " + nextExecution);
- *
- *             // Получение нескольких ближайших дат
- *             List<Date> nextExecutions = calculator.getNextExecutionDates(now, 5);
- *             System.out.println("Next 5 execution dates:");
- *             for (Date date : nextExecutions) {
- *                 System.out.println(date);
- *             }
- *
- *         } catch (ParseException e) {
- *             System.err.println("Invalid cron expression: " + e.getMessage());
- *         }
+/**
+ * пример использования
+ * <p>
+ * try {
+ * // Пример использования с cron-выражением
+ * CronDateCalculator calculator = new CronDateCalculator("0 0/5 * * * ?"); // Каждые 5 минут
+ * Date now = new Date();
+ * <p>
+ * // Получение следующей даты
+ * Date nextExecution = calculator.getNextExecutionDate(now);
+ * System.out.println("Next execution date: " + nextExecution);
+ * <p>
+ * // Получение нескольких ближайших дат
+ * List<Date> nextExecutions = calculator.getNextExecutionDates(now, 5);
+ * System.out.println("Next 5 execution dates:");
+ * for (Date date : nextExecutions) {
+ * System.out.println(date);
+ * }
+ * <p>
+ * } catch (ParseException e) {
+ * System.err.println("Invalid cron expression: " + e.getMessage());
+ * }
  */
 
 public class CronDateCalculator {
