@@ -4,7 +4,8 @@
 
   <groupId>io.github.byzatic.utility.prometheus.exporter</groupId>
   <artifactId>docker-raid-metrics-prometheus-exporter</artifactId>
-  <version>1.0-SNAPSHOT</version>
+<!--  <version>1.0-SNAPSHOT</version>-->
+  <version>1.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>docker-raid-metrics-prometheus-exporter</name>
@@ -19,21 +20,22 @@
     <!-- -->
     <settings.graphql.introspection.enabled>false</settings.graphql.introspection.enabled>
     <!-- -->
-    <version.slf4j>1.7.25</version.slf4j>
-    <version.logback>1.2.9</version.logback>
+    <version.slf4j>2.0.17</version.slf4j>
+    <version.logback>1.5.18</version.logback>
     <version.junit>4.13.1</version.junit>
     <version.postgresql>42.7.4</version.postgresql>
+    <version.java_byzatic_commons>0.0.6</version.java_byzatic_commons>
   </properties>
   <!-- manual set end -->
 
   <!-- manual set -->
   <dependencies>
 
-    <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-configuration2 -->
+    <!-- https://central.sonatype.com/artifact/io.github.byzatic/java-byzatic-commons -->
     <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-configuration2</artifactId>
-      <version>2.11.0</version>
+      <groupId>io.github.byzatic</groupId>
+      <artifactId>java-byzatic-commons</artifactId>
+      <version>${version.java_byzatic_commons}</version>
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
@@ -50,17 +52,18 @@
       <version>1.11.0</version>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-configuration2 -->
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-configuration2</artifactId>
+      <version>2.11.0</version>
+    </dependency>
+
     <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
       <version>3.18.0</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.quartz-scheduler</groupId>
-      <artifactId>quartz</artifactId>
-      <version>2.3.2</version>
     </dependency>
 
     <dependency>
@@ -91,24 +94,25 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>${version.slf4j}</version>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-core -->
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-core</artifactId>
       <version>${version.logback}</version>
-      <!--      <scope>test</scope>-->
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <version>${version.logback}</version>
-      <!--      <scope>test</scope>-->
     </dependency>
 
     <dependency>

@@ -1,14 +1,17 @@
 #!/usr/bin/env bash
+set -e
+set -u
 
-#set -e
-#set -u
-#set -o pipefail
+JAR_PATH="/app/app.jar"
+JAVA_OPTS=(
+  -server
+  "-Xms${XMS:-512m}"
+  "-Xmx${XMX:-1024m}"
+)
 
-EXTERNAL_ARGS=${*}
+main() {
+  echo "[INFO] external args> ${JAVA_OPTS[*]}"
+  exec java "${JAVA_OPTS[@]}" -jar "$JAR_PATH"
+}
 
-env
-
-#
-echo "[INFO] external args> ${*}"
-if ! sh -c "java ${*} -jar /app/app.jar"; then exit 1; fi
-#
+main "$@"
