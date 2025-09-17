@@ -23,7 +23,7 @@ RUN mvn package -DskipTests
 FROM --platform=linux/amd64 docker.io/openjdk:17-slim-bullseye
 
 # Установка OpenJDK, smartmontools + Garbage collecting stage
-RUN apt update && apt install -y smartmontools && \
+RUN apt update && apt install -y smartmontools procps htop top && \
     rm -rf /var/cache/apt/archives /var/lib/apt/lists/* &&\
     apt-get clean
 
