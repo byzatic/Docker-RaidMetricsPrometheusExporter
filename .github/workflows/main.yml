@@ -140,14 +140,18 @@ jobs:
             $( [[ "${{ steps.vars.outputs.branch_name }}" == "main" ]] && echo "--tag docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest" ) \
             $( [[ "${{ steps.vars.outputs.branch_name }}" == "main" ]] && echo "--tag docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:main" ) \
             $( [[ "${{ steps.vars.outputs.branch_name }}" == "main" ]] && echo "--tag docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ steps.pom.outputs.pom_version }}" ) \
+            $( [[ "${{ steps.pom.outputs.pom_version }}" == *-SNAPSHOT ]] && echo "--tag docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ steps.pom.outputs.pom_version }}" ) \
             --file Dockerfile .
 
-      - name: "Push image: sha and branch"
+      - name: "Push image: sha, branch and version if SNAPSHOT"
         shell: bash
         run: |
           set -euo pipefail
           buildah push docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:sha-${{ steps.vars.outputs.short_sha }}
           buildah push docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ steps.vars.outputs.branch_name }}
+          if [[ "${{ steps.pom.outputs.pom_version }}" == *-SNAPSHOT ]]; then
+            buildah push docker.io/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ steps.pom.outputs.pom_version }}
+          fi
 
       - name: "Push image: latest, main, and version"
         if: steps.vars.outputs.branch_name == 'main'
