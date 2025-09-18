@@ -1,10 +1,10 @@
 package io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.collector;
 
 import io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.collector.smartctl.SmartCTLReader;
+import io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.model.MegaRAIDDiskInfo;
+import io.prometheus.metrics.core.metrics.Gauge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import io.prometheus.metrics.core.metrics.Gauge;
-import io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.model.MegaRAIDDiskInfo;
 
 import java.util.List;
 

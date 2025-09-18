@@ -1,17 +1,18 @@
 package io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.collector.smartctl;
 
 import com.google.gson.Gson;
+import io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.collector.exceptions.CollectorException;
 import io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.collector.smartctl.dto.read.SmartctlDiskJson;
 import io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.collector.smartctl.dto.scan.SmartctlDevice;
 import io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.collector.smartctl.dto.scan.SmartctlScanResult;
 import io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.model.MegaRAIDDiskInfo;
-import io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.collector.exceptions.CollectorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SmartCTLReader {
     private final static Logger logger = LoggerFactory.getLogger(SmartCTLReader.class);
@@ -146,7 +147,8 @@ public class SmartCTLReader {
         if (driver.startsWith("megaraid,")) {
             try {
                 return Integer.parseInt(driver.substring("megaraid,".length()));
-            } catch (NumberFormatException ignored) {}
+            } catch (NumberFormatException ignored) {
+            }
         }
         return -1;
     }

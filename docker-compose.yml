@@ -4,6 +4,9 @@ services:
     image: byzatic/docker-raidmetrics-prometheus-exporter:latest
     container_name: raidmetrics-exporter
     privileged: true
+    environment:
+      - XMS=20m
+      - XMX=1024m
     ports:
       - "20222:8080"
     volumes:

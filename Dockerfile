@@ -20,10 +20,10 @@ COPY src ./src
 RUN mvn package -DskipTests
 
 # Step 2: Use a JRE image to run the application and install PostgreSQL client tools
-FROM --platform=linux/amd64 docker.io/library/debian:12.5
+FROM --platform=linux/amd64 docker.io/openjdk:17-slim-bullseye
 
 # Установка OpenJDK, smartmontools + Garbage collecting stage
-RUN apt update && apt install -y openjdk-17-jre smartmontools && \
+RUN apt update && apt install -y smartmontools procps htop && \
     rm -rf /var/cache/apt/archives /var/lib/apt/lists/* &&\
     apt-get clean
 
@@ -34,7 +34,7 @@ RUN mkdir -p /app/data /app/configuration /app/logs
 WORKDIR /app
 
 # Copy the jar from the build stage
-COPY --from=build /app/target/docker-raid-metrics-prometheus-exporter-*-SNAPSHOT-jar-with-dependencies.jar /app/app.jar
+COPY --from=build /app/target/docker-raid-metrics-prometheus-exporter-*-jar-with-dependencies.jar /app/app.jar
 
 # Copy the default configuration
 COPY configuration/default.configuration.xml /app/configuration/configuration.xml
@@ -42,4 +42,5 @@ COPY configuration/default.configuration.xml /app/configuration/configuration.xm
 # Copy the docker-entrypoint
 COPY docker-entrypoint.sh /app/docker-entrypoint.sh
 
-ENTRYPOINT ["sh", "/app/docker-entrypoint.sh"]
+## Run the application
+ENTRYPOINT ["/bin/bash", "/app/docker-entrypoint.sh"]
