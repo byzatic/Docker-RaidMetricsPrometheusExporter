@@ -34,7 +34,7 @@ RUN mkdir -p /app/data /app/configuration /app/logs
 WORKDIR /app
 
 # Copy the jar from the build stage
-COPY --from=build /app/target/docker-raid-metrics-prometheus-exporter-*-SNAPSHOT-jar-with-dependencies.jar /app/app.jar
+COPY --from=build /app/target/docker-raid-metrics-prometheus-exporter-*-jar-with-dependencies.jar /app/app.jar
 
 # Copy the default configuration
 COPY configuration/default.configuration.xml /app/configuration/configuration.xml
