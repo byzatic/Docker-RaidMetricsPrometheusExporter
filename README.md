@@ -86,6 +86,9 @@ networks:
 
 - **cronExpressionString**: Defines scheduling interval. Default: `*/5 * * * * *`
 - **prometheusEndpointURL**: Prometheus-compatible HTTP endpoint. Default: `http://0.0.0.0:8080/metrics`
+- **featureFlagCachingCollector**: enables caching mode that refreshes and removes outdated disk metrics to keep only current ones.
+
+> The featureFlagCachingCollector parameter enables the caching collector mode: when set to true, the exporter maintains a cache of disks and refreshes metrics on each update, removing outdated entries. If a disk’s labels (model, deviceName/mount_point) change, the old label set is deleted and replaced with the new one, and if a disk disappears, all its metrics are removed. Ensuring that only current and valid metrics are exposed.
 
 ---
 
