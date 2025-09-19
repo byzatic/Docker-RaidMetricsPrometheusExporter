@@ -1,4 +1,18 @@
-# Docker Raid Metrics Prometheus Exporter
+# Docker Raid Metrics Prometheus Exporter — Project Frozen
+
+**Status (2025-09-19):** This repository is **frozen**. The project outgrew RAID-only monitoring and now covers both standalone disks (S.M.A.R.T.) and hardware RAID controllers. Ongoing development continues in the broader, unified project:
+
+👉 **Storage Health Exporter** — https://github.com/byzatic/storage-health-exporter
+
+## Why the move
+- Current functionality spans **both disks and RAID**, so a neutral name and scope are more accurate.
+- Simplified versions, CI/CD, and documentation in one place.
+- Consistent metric schema and release cycle for mixed environments.
+
+## What users should do
+- **New deployments:** use `byzatic/storage-health-exporter`.
+- **Existing deployments:** you may keep using the current image, but it **will not receive updates**.
+- **Issues/PRs:** please open them in the new repository — https://github.com/byzatic/storage-health-exporter/issues
 
 ## Description
 
