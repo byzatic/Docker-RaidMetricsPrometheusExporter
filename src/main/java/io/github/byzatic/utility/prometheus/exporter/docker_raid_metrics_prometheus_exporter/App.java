@@ -1,7 +1,8 @@
 package io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter;
 
-import io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.collector.RAIDMetricsCollector;
 import io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.collector.RAIDMetricsCollectorInterface;
+import io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.collector.SmartctlCollectorFactory;
+import io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.collector.SmartctlCollectorFactoryInterface;
 import io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.collector.smartctl.SmartCTLReader;
 import io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.service.RAIDMetricsService;
 import io.github.byzatic.utility.prometheus.exporter.docker_raid_metrics_prometheus_exporter.service.RAIDMetricsServiceInterface;
@@ -14,7 +15,8 @@ public class App {
     public static void main(String[] args) {
         logger.debug("MegaRAID metrics service is running...");
 
-        RAIDMetricsCollectorInterface collector = new RAIDMetricsCollector(new SmartCTLReader());
+        SmartctlCollectorFactoryInterface collectorFactory = new SmartctlCollectorFactory(new SmartCTLReader());
+        RAIDMetricsCollectorInterface collector = collectorFactory.getCollector(Configuration.FEATURE_FLAG_CACHING_COLLECTOR);
         RAIDMetricsServiceInterface megaRAIDMetricsService = new RAIDMetricsService(Configuration.PROMETHEUS_URL, Configuration.CRON_EXPRESSION_STRING, collector);
 
         try {
