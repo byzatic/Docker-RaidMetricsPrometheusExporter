@@ -25,4 +25,5 @@ NOTE:
 <Configuration>
     <cronExpressionString>*/5 * * * * *</cronExpressionString>
     <prometheusEndpointURL>http://0.0.0.0:8080/metrics</prometheusEndpointURL>
+    <featureFlagCachingCollector>true</featureFlagCachingCollector>
 </Configuration>

@@ -13,9 +13,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 public class Configuration {
-
-    // TODO: а потом это вынести в Singleton
-
     private final static Logger logger = LoggerFactory.getLogger(App.class);
     public static final String APP_NAME = "docker-raid-metrics-prometheus-exporter";
 
@@ -47,6 +44,8 @@ public class Configuration {
     public static final String CRON_EXPRESSION_STRING;
     public static final URL PROMETHEUS_URL;
 
+    public static final boolean FEATURE_FLAG_CACHING_COLLECTOR;
+
     static {
         try {
             logger.debug("Static block is executed.");
@@ -56,7 +55,10 @@ public class Configuration {
             XMLConfiguration config = configs.xml("configuration/configuration.xml");
 
             CRON_EXPRESSION_STRING = config.getString("cronExpressionString");
+
             PROMETHEUS_URL = new URI(config.getString("prometheusEndpointURL")).toURL();
+
+            FEATURE_FLAG_CACHING_COLLECTOR = config.getBoolean("featureFlagCachingCollector", false);
         } catch (MalformedURLException | URISyntaxException e) {
             logger.error("Exception : " + ExceptionUtils.getStackTrace(e));
             throw new RuntimeException("Error reading URL", e);
